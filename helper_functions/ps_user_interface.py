@@ -90,7 +90,7 @@ def render_clarification_process(clarifier, pdf_gen, initial_statement):
 
 
 def render_issue_selection(clarifier):
-    st.write("Please enter your own issues or areas of concern:")
+    st.write("Please enter the issue(s) that you want to focus on:")
 
     new_issue = st.text_input("Enter an issue (optional):", key="new_issue")
     if st.button("Add Issue", key="add_manual_issue"):
@@ -121,7 +121,7 @@ def render_issue_selection(clarifier):
                 st.session_state.selected_issues.remove(issue)
 
     if st.session_state.selected_issues:
-        st.write("Selected Focus Areas:")
+        st.write("Selected Issues to Focus on:")
         for issue in st.session_state.selected_issues:
             st.write(f"- {issue}")
 
@@ -262,6 +262,13 @@ def display_summary(clarifier, pdf_gen, initial_statement, refined_statement):
     st.markdown(
         pdf_gen.get_pdf_download_link(pdf_buffer, pdf_filename), unsafe_allow_html=True
     )
+
+    restart_button_last = st.button(
+        "Restart Clarification Process", key="restart_button_last"
+    )
+
+    if restart_button_last:
+        restart_process()
 
 
 def extract_pdf_name(problem_statement):
