@@ -19,13 +19,15 @@ st.header("Your Intelligent Data Companion at MOE")
 st.markdown("---")
 
 st.subheader("WARNING!")
-st.write(
+
+st.warning(
     """
 :red[IMPORTANT NOTICE]: This web application is a prototype developed for educational purposes only. The information provided here is NOT intended for real-world usage and should not be relied upon for making any decisions, especially those related to financial, legal, or healthcare matters.
 
 Furthermore, please be aware that the LLM may generate inaccurate or incorrect information. You assume full responsibility for how you use any generated output.
 
-Always consult with qualified professionals for accurate and personalized advice."""
+Always consult with qualified professionals for accurate and personalized advice.""",
+    icon="⚠️",
 )
 
 st.markdown("---")
@@ -69,6 +71,8 @@ with col2:
 
 
 st.divider()
+
+st.info("Quotation", icon="ℹ️")
 
 quote_selected_output = select_quote()
 st.markdown(f'> "{quote_selected_output[0]}" - {quote_selected_output[1]}')

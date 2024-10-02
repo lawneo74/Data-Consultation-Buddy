@@ -197,7 +197,7 @@ class ProblemClarifier:
                 7. Actionable
                 8. Timely
             Provide a refined version of the problem statement that incorporates new information gathered during the clarification process.
-            Only output the refined problem statement text, without any additional formatting or explanation.
+            Output the refined problem statement text, with explanations on the new information that have been included but were not provided by the user.
             """,
         )
 

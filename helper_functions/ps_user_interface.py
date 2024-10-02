@@ -4,7 +4,7 @@ from config import HUMAN_ICON, AI_ICON
 
 
 def render_user_interface(clarifier, pdf_gen):
-    st.title("AI Problem Statement Clarifier")
+    st.header("AI Problem Statement Clarifier")
 
     left_column, right_column = st.columns([3, 1])
 
@@ -235,9 +235,10 @@ def display_summary(clarifier, pdf_gen, initial_statement, refined_statement):
         f"Suggested Problem Statement (for consideration): {problem_statement_title}"
     )
     st.write(refined_statement)
-    st.write("---")
-    st.write(
-        ":blue[Please revise the problem statement to ensure that it accurately reflects the problem.]"
+
+    st.warning(
+        "Please revise the problem statement to ensure that it accurately reflects the problem",
+        icon="⚠️",
     )
 
     feedback_refined_statement = clarifier.generate_feedback_problem_statement(

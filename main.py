@@ -1,6 +1,8 @@
+## https://data-consultation-buddy-ln.streamlit.app/
+
 # Set up and run this Streamlit App
 import streamlit as st
-from helper_functions.user_interface import render_user_interface
+from helper_functions.ps_user_interface import render_user_interface
 from helper_functions.utility import check_password
 from logics.problem_statement_clarifier import ProblemClarifier
 from helper_functions.pdf_generator import PDFGenerator
@@ -21,19 +23,20 @@ st.set_page_config(layout="wide", page_title="Data Consultancy Buddy")
 config = load_config()
 
 with st.expander("Warning", expanded=False):
-    st.write(
+    st.warning(
         """
 :red[IMPORTANT NOTICE]: This web application is a prototype developed for educational purposes only. The information provided here is NOT intended for real-world usage and should not be relied upon for making any decisions, especially those related to financial, legal, or healthcare matters.
 
 Furthermore, please be aware that the LLM may generate inaccurate or incorrect information. You assume full responsibility for how you use any generated output.
 
 Always consult with qualified professionals for accurate and personalized advice.
-"""
+""",
+        icon="⚠️",
     )
 
 st.divider()
 
-st.header("MOE Data Consultancy Buddy")
+st.title("MOE Data Consultancy Buddy")
 
 tab1, tab2, tab3 = st.tabs(
     [
