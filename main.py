@@ -4,7 +4,7 @@
 import streamlit as st
 from helper_functions.ps_user_interface import render_user_interface
 from helper_functions.utility import check_password
-from logics.problem_statement_clarifier import ProblemClarifier
+from logics.ps_clarifier import ProblemClarifier
 from helper_functions.pdf_generator import PDFGenerator
 from config import load_config
 
