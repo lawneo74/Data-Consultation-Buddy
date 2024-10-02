@@ -197,7 +197,8 @@ class ProblemClarifier:
                 7. Actionable
                 8. Timely
             Provide a refined version of the problem statement that incorporates new information gathered during the clarification process.
-            Output the refined problem statement text, with explanations on the new information that have been included but were not provided by the user.
+            Output the refined problem statement text.
+            Add a paragraph to explain the new information that have been included in the refned problem statement, but were not provided by the user.
             """,
         )
 
@@ -303,14 +304,8 @@ class ProblemClarifier:
                 7. Actionable
                 8. Timely
             </criteria>
-            Provide a concise and succinct report on the evaluation of the refined problem statement and feedback for the refined problem \
-                statement using the format below:
-            [a concise and succinct report]
-           
-            Feedback:
-            1. [feedback 1] - [elaboration 1]
-            2. [feedback 2] - [elaboration 2]
-            3. [feedback 3] - [elaboration 3]
+            Provide a concise and succinct report on the evaluation of the refined problem statement \
+            and feedback for the refined problem statement. A paragraph for evaluation and another paragraph for feedback.
             """,
         )
 

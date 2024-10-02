@@ -77,13 +77,27 @@ class PDFGenerator:
 
         # Refined Problem Statement
         story.append(Paragraph("Refined Problem Statement:", self.styles["Heading2"]))
-        story.append(Paragraph(refined_statement, self.bold_style))
+
+        # Split the input text into paragraphs
+        paragraphs = refined_statement.strip().split("\n\n")
+
+        # Add each paragraph to the story
+        for para in paragraphs:
+            story.append(Paragraph(para.strip(), self.normal_style))
+            story.append(Spacer(1, 12))
 
         # Feedback on Refined Problem Statement
         story.append(
             Paragraph("Feedback on Refined Problem Statement:", self.styles["Heading2"])
         )
-        story.append(Paragraph(feedback_refined_statement, self.bold_style))
+
+        # Split the input text into paragraphs
+        paragraphs = feedback_refined_statement.strip().split("\n\n")
+
+        # Add each paragraph to the story
+        for para in paragraphs:
+            story.append(Paragraph(para.strip(), self.normal_style))
+            story.append(Spacer(1, 12))
 
         # Build the PDF
         doc.build(story)

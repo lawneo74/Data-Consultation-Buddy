@@ -1,10 +1,11 @@
 import streamlit as st
 import re
 from config import HUMAN_ICON, AI_ICON
+import time
 
 
-def render_user_interface(clarifier, pdf_gen):
-    st.header("AI Problem Statement Clarifier")
+def render_user_interface(clarifier, threat_detector, pdf_gen):
+    st.subheader("AI Problem Statement Clarifier")
 
     left_column, right_column = st.columns([3, 1])
 
@@ -27,10 +28,27 @@ def render_user_interface(clarifier, pdf_gen):
 
         start_button = st.button("Start Clarification Process", key="start_button")
         if start_button:
-            st.session_state.ps_process_started = True
-            initialize_session_state()
-            process_initial_statement(clarifier, st.session_state.initial_statement)
-            st.rerun()
+
+            ## Detect Prompt Hijacking
+            is_threat = threat_detector.detect_threat(
+                st.session_state.initial_statement
+            )
+
+            if is_threat == True:
+                st.warning(
+                    "Prompt hijacking/malicious intent detected! \
+                        Please re-write the problem statement.",
+                    icon="🚨",
+                )
+                time.sleep(2)
+                st.session_state.initial_statement = ""
+                st.rerun()
+
+            else:
+                st.session_state.ps_process_started = True
+                initialize_session_state()
+                process_initial_statement(clarifier, st.session_state.initial_statement)
+                st.rerun()
 
         if st.session_state.ps_process_started:
             render_clarification_process(
@@ -201,13 +219,13 @@ def process_continue(clarifier, initial_statement, user_response):
 
 
 def process_end_clarification(clarifier, pdf_gen, initial_statement, user_response):
-    if user_response:
-        st.session_state.ps_clarifications.append(
-            {"role": AI_ICON, "text": st.session_state.current_question}
-        )
-        st.session_state.ps_clarifications.append(
-            {"role": HUMAN_ICON, "text": user_response}
-        )
+    # if user_response:
+    st.session_state.ps_clarifications.append(
+        {"role": AI_ICON, "text": st.session_state.current_question}
+    )
+    st.session_state.ps_clarifications.append(
+        {"role": HUMAN_ICON, "text": user_response}
+    )
 
     refined_statement = clarifier.refine_problem_statement(
         initial_statement, st.session_state.ps_clarifications
@@ -248,6 +266,7 @@ def display_summary(clarifier, pdf_gen, initial_statement, refined_statement):
     st.subheader("Feedback for the Refined Statement")
     st.write(feedback_refined_statement)
 
+    print(st.session_state.ps_clarifications)
     pdf_buffer = pdf_gen.create_pdf(
         initial_statement,
         st.session_state.selected_issues,
