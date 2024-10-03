@@ -1,5 +1,3 @@
-## https://data-consultation-buddy-ln.streamlit.app/
-
 __import__("pysqlite3")
 import sys
 
@@ -10,6 +8,7 @@ import streamlit as st
 from helper_functions.ps_user_interface import render_user_interface
 from helper_functions.utility import check_password
 from logics.ps_clarifier import ProblemClarifier
+from helper_functions.threat_detector import ThreatDetector
 from helper_functions.pdf_generator import PDFGenerator
 from config import load_config
 
@@ -52,6 +51,15 @@ tab1, tab2, tab3 = st.tabs(
 )
 
 
+@st.cache_resource
+def create_threat_detector(config):
+    threat_detector = ThreatDetector(config)
+    return threat_detector
+
+
+threat_detector = create_threat_detector(config)
+
+
 with tab1:
     st.subheader("Clarify Problem Statement")
 
@@ -79,7 +87,7 @@ with tab1:
     pdf_gen = PDFGenerator()
 
     # # Render the User Interface
-    render_user_interface(clarifier, pdf_gen)
+    render_user_interface(clarifier, threat_detector, pdf_gen)
 
 with tab2:
     st.subheader("Research Questions")
