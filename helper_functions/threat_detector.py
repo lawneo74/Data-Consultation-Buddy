@@ -86,7 +86,7 @@ class ThreatDetector:
         )
 
         crew = Crew(
-            agents=[self.threat_detector_agent], tasks=[detection_task], verbose=True
+            agents=[self.threat_detector_agent], tasks=[detection_task], verbose=False
         )
 
         result = crew.kickoff()

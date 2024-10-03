@@ -1,4 +1,4 @@
-## https://data-consultation-buddy-ln.streamlit.app/
+### https://data-consultation-buddy-test.streamlit.app/
 
 # Set up and run this Streamlit App
 import streamlit as st
@@ -48,7 +48,14 @@ tab1, tab2, tab3 = st.tabs(
 )
 
 
-threat_detector = ThreatDetector(config)
+@st.cache_resource
+def create_threat_detector(config):
+    threat_detector = ThreatDetector(config)
+    return threat_detector
+
+
+threat_detector = create_threat_detector(config)
+
 
 with tab1:
     st.subheader("Clarify Problem Statement")
@@ -74,7 +81,6 @@ with tab1:
 
     # with problem_statement_clarifier tab:
     clarifier = ProblemClarifier(config)
-
     pdf_gen = PDFGenerator()
 
     # # Render the User Interface

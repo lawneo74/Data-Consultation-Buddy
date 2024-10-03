@@ -52,7 +52,7 @@ def render_user_interface(clarifier, threat_detector, pdf_gen):
 
         if st.session_state.ps_process_started:
             render_clarification_process(
-                clarifier, pdf_gen, st.session_state.initial_statement
+                clarifier, threat_detector, pdf_gen, st.session_state.initial_statement
             )
 
 
@@ -91,11 +91,13 @@ def process_initial_statement(clarifier, initial_statement):
     st.session_state.broad_issues = broad_issues
 
 
-def render_clarification_process(clarifier, pdf_gen, initial_statement):
+def render_clarification_process(
+    clarifier, threat_detector, pdf_gen, initial_statement
+):
     st.subheader("Clarification Process Started")
 
     if not st.session_state.issues_confirmed:
-        issues_confirmed = render_issue_selection(clarifier)
+        issues_confirmed = render_issue_selection(clarifier, threat_detector)
         if issues_confirmed:
             st.session_state.issues_confirmed = True
             st.rerun()
@@ -103,21 +105,38 @@ def render_clarification_process(clarifier, pdf_gen, initial_statement):
         st.write("Selected Focus Areas:")
         for issue in st.session_state.selected_issues:
             st.write(f"- {issue}")
-        user_response = render_clarification_interactions(clarifier, initial_statement)
+        user_response = render_clarification_interactions(
+            clarifier, threat_detector, initial_statement
+        )
         render_process_buttons(clarifier, pdf_gen, initial_statement, user_response)
 
 
-def render_issue_selection(clarifier):
+def render_issue_selection(clarifier, threat_detector):
     st.write("Please enter the issue(s) that you want to focus on:")
 
-    new_issue = st.text_input("Enter an issue (optional):", key="new_issue")
+    new_issue = st.text_input("Enter an issue (optional):", key="new_issue", value="")
+
     if st.button("Add Issue", key="add_manual_issue"):
         if new_issue:
-            rephrased_issue = clarifier.rephrase_issue(new_issue)
-            st.session_state.manual_issues.append(rephrased_issue)
-            st.session_state.selected_issues.append(rephrased_issue)
-            st.success(f"Added: {rephrased_issue}")
-            st.rerun()
+
+            ## Detect Prompt Hijacking
+            is_threat = threat_detector.detect_threat(new_issue)
+
+            if is_threat == True:
+                st.warning(
+                    "Prompt hijacking/malicious intent detected! \
+                        Please re-write the entry.",
+                    icon="🚨",
+                )
+                time.sleep(2)
+                st.rerun()
+
+            else:
+                rephrased_issue = clarifier.rephrase_issue(new_issue)
+                st.session_state.manual_issues.append(rephrased_issue)
+                st.session_state.selected_issues.append(rephrased_issue)
+                st.success(f"Added: {rephrased_issue}")
+                st.rerun()
         else:
             st.warning("Please enter an issue before adding.")
 
@@ -147,7 +166,7 @@ def render_issue_selection(clarifier):
     return confirm_button
 
 
-def render_clarification_interactions(clarifier, initial_statement):
+def render_clarification_interactions(clarifier, threat_detector, initial_statement):
     for i, interaction in enumerate(st.session_state.ps_clarifications):
         if interaction["role"] == HUMAN_ICON:
             edited_response = st.text_area(
@@ -175,7 +194,21 @@ def render_clarification_interactions(clarifier, initial_statement):
         "Your response (leave blank to skip):",
         key=f"response_{len(st.session_state.ps_clarifications)}",
         height=100,
+        value="leave blank to skip",
     )
+
+    if user_response:
+
+        ## Detect Prompt Hijacking
+        is_threat = threat_detector.detect_threat(user_response)
+        if is_threat == True:
+            st.warning(
+                "Prompt hijacking/malicious intent detected! \
+                    Please re-write the entry.",
+                icon="🚨",
+            )
+            time.sleep(2)
+            # st.rerun()
 
     return user_response
 
