@@ -1,0 +1,29 @@
+import pandas as pd
+import json
+
+# Read the Excel file
+metadata_df = pd.read_excel('Mock Metadata Catalogue.xlsx',sheet_name='Sheet1',header=None)
+
+# Create dictionary
+json_data = {}
+
+for _, row in metadata_df.iloc[1:].iterrows():
+    dataset_id = row.iloc[1]
+    dataset_details = {
+        metadata_df.iloc[0,2]: row.iloc[2],
+        metadata_df.iloc[0,3]: row.iloc[3],
+        metadata_df.iloc[0,4]: row.iloc[4],
+        metadata_df.iloc[0,5]: row.iloc[5],
+        metadata_df.iloc[0,6]: row.iloc[6],
+        metadata_df.iloc[0,7]: row.iloc[7],
+        metadata_df.iloc[0,8]: row.iloc[8],
+        metadata_df.iloc[0,9]: row.iloc[9],
+        metadata_df.iloc[0,10]: row.iloc[10],
+        metadata_df.iloc[0,11]: row.iloc[11]
+    }
+    json_data[dataset_id] = dataset_details
+
+# Convert dictionary to JSON string
+metadata_json = json.dumps(json_data, indent=2)
+
+print(metadata_json)
